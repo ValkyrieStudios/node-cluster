@@ -1,0 +1,33 @@
+{
+  "name": "@valkyriestudios/node-cluster",
+  "version": "2.0.0",
+  "description": "A cluster script for clustering node processes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValkyrieStudios/node-cluster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ValkyrieStudios/node-cluster/issues"
+  },
+  "author": "Valkyrie Studios <contact@valkyriestudios.be>",
+  "homepage": "https://github.com/ValkyrieStudios/node-cluster#readme",
+  "dependencies": {
+    "minimist": "1.2.0"
+  },
+  "devDependencies": {
+    "babel-plugin-check-es2015-constants": "^6.22.0",
+    "babel-plugin-transform-member-expression-literals": "^6.8.4",
+    "babel-plugin-transform-minify-booleans": "^6.8.2",
+    "babel-plugin-transform-property-literals": "^6.8.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2"
+  }
+}
