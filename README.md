@@ -20,7 +20,7 @@ For example if the script that you use to run your server is under dist/server/i
 ```
 ...
 "scripts": {
-    "start": "node node_modules/@valkyriestudios/node-cluster --worker='dist/server/index.js'"
+    "start": "node node_modules/@valkyriestudios/node-cluster --worker=dist/server/index.js"
 },
 ...
 ```
