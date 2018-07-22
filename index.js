@@ -28,16 +28,22 @@ var _os = require('os');
 
 var _os2 = _interopRequireDefault(_os);
 
+var _nodeArgs = require('@valkyriestudios/node-args');
+
+var _nodeArgs2 = _interopRequireDefault(_nodeArgs);
+
 var _WorkerDaemon = require('./WorkerDaemon');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //  Parse incoming parameters using minimist
-var params = require('minimist')(process.argv.slice(2));
+var params = (0, _nodeArgs2.default)();
+console.log(params);
 
 var scope = (0, _freeze2.default)({
-    path: _path2.default.resolve(params.w || params.worker),
-    amt: _os2.default.cpus().length,
+    path: _path2.default.resolve(params.flags.w || params.flags.worker),
+    amt: params.flags.c || params.flags.count || _os2.default.cpus().length,
+    timeout: params.flags.t || params.flags.timeout || 10000,
     name: 'web',
     instances: {}
 });
@@ -57,6 +63,11 @@ if (_cluster2.default.isMaster) {
         },
         clean: {
             value: function value(inst) {
+                var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : !1;
+
+                if (msg) {
+                    utils.logMaster(inst, msg);
+                }
                 clearTimeout((scope.instances[inst.process.pid] || {}).ttl || null);
                 delete scope.instances[inst.process.pid];
             }
@@ -75,7 +86,7 @@ if (_cluster2.default.isMaster) {
             ttl: setTimeout(function () {
                 utils.clean(inst);
                 utils.logWorker(inst, 'timeout');
-            }, 10000)
+            }, params.flags.timeout)
         };
     });
 
@@ -101,9 +112,7 @@ if (_cluster2.default.isMaster) {
         var _WORKER_DAEMON_EVENTS;
 
         ((_WORKER_DAEMON_EVENTS = {}, (0, _defineProperty3.default)(_WORKER_DAEMON_EVENTS, _WorkerDaemon.WORKER_DAEMON_EVENTS.SHUTDOWN, function () {
-            utils.logMaster(inst, 'shutting down | reason : ' + msg.data);
-            utils.clean(inst);
-
+            utils.clean(inst, 'shutting down | reason : ' + msg.data);
             inst.kill();
         }), (0, _defineProperty3.default)(_WORKER_DAEMON_EVENTS, _WorkerDaemon.WORKER_DAEMON_EVENTS.LOG, function () {
             utils.logMaster(inst, msg.data);

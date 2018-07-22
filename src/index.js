@@ -1,18 +1,21 @@
 'use strict';
 
-import cluster from 'cluster';
-import path from 'path';
-import os from 'os';
+import cluster                  from 'cluster';
+import path                     from 'path';
+import os                       from 'os';
+import NodeArgs                 from '@valkyriestudios/node-args';
 import { WORKER_DAEMON_EVENTS } from './WorkerDaemon';
 
 //  Parse incoming parameters using minimist
-const params = require('minimist')(process.argv.slice(2));
+const params = NodeArgs();
+console.log(params);
 
 const scope = Object.freeze({
-    path : path.resolve(params.w || params.worker),
-    amt : os.cpus().length,
-    name : 'web',
-    instances : {},
+    path        : path.resolve(params.flags.w || params.flags.worker),
+    amt         : params.flags.c || params.flags.count || os.cpus().length,
+    timeout     : params.flags.t || params.flags.timeout || 10000,
+    name        : 'web',
+    instances   : {},
 });
 
 if (cluster.isMaster) {
@@ -25,7 +28,10 @@ if (cluster.isMaster) {
             value : (inst, msg) => console.log(`master [worker::${inst.process.pid}] || ${msg}`)
         },
         clean : {
-            value : (inst) => {
+            value : (inst, msg = false) => {
+                if (msg) {
+                    utils.logMaster(inst, msg);
+                }
                 clearTimeout((scope.instances[inst.process.pid] || {}).ttl || null);
                 delete scope.instances[inst.process.pid];
             }
@@ -44,7 +50,7 @@ if (cluster.isMaster) {
             ttl : setTimeout(() => {
                 utils.clean(inst);
                 utils.logWorker(inst, 'timeout');
-            }, 10000),
+            }, params.flags.timeout),
         };
     });
 
@@ -69,9 +75,7 @@ if (cluster.isMaster) {
     cluster.on('message', (inst, msg, handle) => {
         ({
             [WORKER_DAEMON_EVENTS.SHUTDOWN] : () => {
-                utils.logMaster(inst, `shutting down | reason : ${msg.data}`);
-                utils.clean(inst);
-
+                utils.clean(inst, `shutting down | reason : ${msg.data}`);
                 inst.kill();
             },
             [WORKER_DAEMON_EVENTS.LOG] : () => {

@@ -4,19 +4,44 @@ A lightweight node clustering script that can be used to cluster a single worker
 
 ## Basic Setup
 
-The easiest way to make it work is running it as an npm lifecycle hook, set your `start` command to the following:
+The easiest way to make it work is running it as an npm lifecycle hook, set your `start` command in **package.json** to the following:
 
 ```
-node node_modules/@valkyriestudios/node-cluster --worker PATH_TO_MY_SCRIPT
+...
+"scripts": {
+    "start": "node node_modules/@valkyriestudios/node-cluster --worker=PATH_TO_MY_SCRIPT"
+},
+...
+
 ```
 
 For example if the script that you use to run your server is under dist/server/index.js :
 
 ```
-node node_modules/@valkyriestudios/node-cluster --worker 'dist/server/index.js'
+...
+"scripts": {
+    "start": "node node_modules/@valkyriestudios/node-cluster --worker='dist/server/index.js'"
+},
+...
 ```
 
 In essence that's all there is to it!
+
+
+## Configuration
+
+Some aspects of the clustering can be controlled through arguments passed to the node-cluster script. Below is a full overview of these
+parameters, along with a small description of each and their defaults.
+
+- **worker**<br> (required)
+Configures the script of the worker instance that is to be clustered. (shorthand: '-w')
+
+- **count**<br> (default: amount of cpus that are available on the system that this is run on)
+Configures the amount of instances to create of the worker script. (shorthand: '-c')
+
+- **timeout**<br> (default: 10000)
+Configures the time in miliseconds that the node-cluster script will wait for a 'listen' event from a worker instance before shutting it down.
+(shorthand: '-t')
 
 ## Getting into the nitty-gritty
 
@@ -56,6 +81,10 @@ Tells the master to shutdown this specific instance on the cluster<br>
 ### log(msg)
 Tells the master to log a message <br>
 @variable: **msg** (String): A message to be logged by the master
+
+
+## Author
+- Peter Vermeulen : [Valkyrie Studios](www.valkyriestudios.be)
 
 
 ## Contributors
