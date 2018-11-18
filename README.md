@@ -1,5 +1,8 @@
 ## @valkyriestudios/node-cluster
 
+[![npm](https://img.shields.io/npm/v/@valkyriestudios/node-cluster.svg)](https://www.npmjs.com/package/@valkyriestudios/node-cluster)
+[![npm](https://img.shields.io/npm/dm/@valkyriestudios/utils.svg)](https://www.npmjs.com/package/@valkyriestudios/node-cluster)
+
 A lightweight node clustering script that can be used to cluster a single worker up to the max amount of cpu's available on a system.
 
 ## Basic Setup
